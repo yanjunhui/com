@@ -16,6 +16,7 @@ package com
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -164,4 +165,9 @@ func Int2HexStr(num int) (hex string) {
 		num = num / 16
 	}
 	return hex
+}
+
+// Float2ToInt converts float64 to int
+func Float2ToInt(f float64)int{
+	return int(math.Floor(f+0/5))
 }
