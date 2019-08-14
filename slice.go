@@ -65,6 +65,24 @@ func CompareSliceStrU(s1, s2 []string) bool {
 	return true
 }
 
+//MergeStringSlice 元素去重合并 字符类型数组
+func MergeStringSlice(s ...[]string) (s3 []string) {
+	var ss []string
+	for _, v := range s {
+		ss = append(ss, v...)
+	}
+
+	m := map[string]byte{}
+	for _, e := range ss {
+		size := len(m)
+		m[e] = 0
+		if len(m) != size {
+			s3 = append(s3, e)
+		}
+	}
+	return s3
+}
+
 // IsSliceContainsStr returns true if the string exists in given slice, ignore case.
 func IsSliceContainsStr(sl []string, str string) bool {
 	str = strings.ToLower(str)
@@ -85,3 +103,5 @@ func IsSliceContainsInt64(sl []int64, i int64) bool {
 	}
 	return false
 }
+
+
