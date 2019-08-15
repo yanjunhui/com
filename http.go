@@ -147,6 +147,26 @@ func HttpPostJSON(client *http.Client, url string, body, v interface{}) error {
 	return nil
 }
 
+func HttpPostJSONContainHeader(client *http.Client, url string, header http.Header, body, v interface{}) error {
+	data, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+
+	header.Add("content-type", "application/json")
+
+	rc, err := HttpPost(client, url, header, data)
+	if err != nil {
+		return err
+	}
+	defer rc.Close()
+	err = json.NewDecoder(rc).Decode(v)
+	if _, ok := err.(*json.SyntaxError); ok {
+		return fmt.Errorf("JSON syntax error at %s", url)
+	}
+	return nil
+}
+
 // A RawFile describes a file that can be downloaded.
 type RawFile interface {
 	Name() string
