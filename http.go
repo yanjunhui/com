@@ -147,6 +147,27 @@ func HttpPostJSON(client *http.Client, url string, body, v interface{}) error {
 	return nil
 }
 
+// HttpPostJSONOffEscapeHTML posts the specified resource with struct values,
+// and maps results to struct.
+// ErrNotFound is returned if the server responds with status 404.
+// escapeHTML is off
+func HttpPostJSONOffEscapeHTML(client *http.Client, url string, body, v interface{}) error {
+	data, err := JSON(body)
+	if err != nil {
+		return err
+	}
+	rc, err := HttpPost(client, url, http.Header{"content-type": []string{"application/json"}}, data)
+	if err != nil {
+		return err
+	}
+	defer rc.Close()
+	err = json.NewDecoder(rc).Decode(v)
+	if _, ok := err.(*json.SyntaxError); ok {
+		return fmt.Errorf("JSON syntax error at %s", url)
+	}
+	return nil
+}
+
 func HttpPostJSONContainHeader(client *http.Client, url string, header http.Header, body, v interface{}) error {
 	data, err := json.Marshal(body)
 	if err != nil {
